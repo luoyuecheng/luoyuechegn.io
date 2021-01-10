@@ -4,7 +4,7 @@
 > 使用 git submodule 至少需要两个 git 仓库，一个作为主仓库，一个作为子仓库
 
 例：
-主仓库：https://github.com/luoyuecheng/weixin.git
+主仓库：https://github.com/luoyuecheng/weixin.git  
 子仓库：https://github.com/luoyuecheng/wxbook.git
 
 ### 1. 使用子模块(创建子模块)
