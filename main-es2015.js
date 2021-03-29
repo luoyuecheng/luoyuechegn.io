@@ -1421,7 +1421,9 @@ class HomeComponent {
     getArticleLists() {
         // this.articleLists = this.articlesService.getLists();
         // this.articlesService.getLists().subscribe((res: any) => this.articleLists = res.data);
-        this.articleLists = this.articlesService.getArticleList();
+        // 按创建时间降序排序
+        const queryFn = ref => ref.orderBy('createTime', 'desc');
+        this.articleLists = this.articlesService.getArticleList(queryFn);
     }
 }
 HomeComponent.ɵfac = function HomeComponent_Factory(t) { return new (t || HomeComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_articles_articles_service__WEBPACK_IMPORTED_MODULE_1__["ArticlesService"])); };
@@ -1596,6 +1598,7 @@ class ArticlesService {
         this.http = http;
         this.db = db;
         this.angularFireAuth = angularFireAuth;
+        window['db'] = db;
     }
     /**
      * Get User info
@@ -1667,8 +1670,8 @@ class ArticlesService {
                 return this.updateArticle(id, article);
             }
             article.createTime = new Date().valueOf();
-            const result = this.db.collection('article').add(article);
-            const articleId = result[0].id;
+            const result = yield this.db.collection('article').add(article);
+            const articleId = result.id;
             const tagmarksCollection = this.db.collection('article').doc(articleId).collection('tagmarks');
             // Add tagmarks category
             yield tagmarksCollection.add({ value: article.category, type: 'category' });

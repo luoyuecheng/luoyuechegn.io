@@ -2786,7 +2786,12 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         value: function getArticleLists() {
           // this.articleLists = this.articlesService.getLists();
           // this.articlesService.getLists().subscribe((res: any) => this.articleLists = res.data);
-          this.articleLists = this.articlesService.getArticleList();
+          // 按创建时间降序排序
+          var queryFn = function queryFn(ref) {
+            return ref.orderBy('createTime', 'desc');
+          };
+
+          this.articleLists = this.articlesService.getArticleList(queryFn);
         }
       }]);
 
@@ -3136,6 +3141,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         this.http = http;
         this.db = db;
         this.angularFireAuth = angularFireAuth;
+        window['db'] = db;
       }
       /**
        * Get User info
@@ -3247,66 +3253,70 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
                   case 4:
                     article.createTime = new Date().valueOf();
-                    result = this.db.collection('article').add(article);
-                    articleId = result[0].id;
+                    _context.next = 7;
+                    return this.db.collection('article').add(article);
+
+                  case 7:
+                    result = _context.sent;
+                    articleId = result.id;
                     tagmarksCollection = this.db.collection('article').doc(articleId).collection('tagmarks'); // Add tagmarks category
 
-                    _context.next = 10;
+                    _context.next = 12;
                     return tagmarksCollection.add({
                       value: article.category,
                       type: 'category'
                     });
 
-                  case 10:
+                  case 12:
                     // Add tagmarks tag
                     _iterator3 = _createForOfIteratorHelper(article.tags);
-                    _context.prev = 11;
+                    _context.prev = 13;
 
                     _iterator3.s();
 
-                  case 13:
+                  case 15:
                     if ((_step3 = _iterator3.n()).done) {
-                      _context.next = 19;
+                      _context.next = 21;
                       break;
                     }
 
                     item = _step3.value;
-                    _context.next = 17;
+                    _context.next = 19;
                     return tagmarksCollection.add({
                       value: item,
                       type: 'tag'
                     });
 
-                  case 17:
-                    _context.next = 13;
-                    break;
-
                   case 19:
-                    _context.next = 24;
+                    _context.next = 15;
                     break;
 
                   case 21:
-                    _context.prev = 21;
-                    _context.t0 = _context["catch"](11);
+                    _context.next = 26;
+                    break;
+
+                  case 23:
+                    _context.prev = 23;
+                    _context.t0 = _context["catch"](13);
 
                     _iterator3.e(_context.t0);
 
-                  case 24:
-                    _context.prev = 24;
+                  case 26:
+                    _context.prev = 26;
 
                     _iterator3.f();
 
-                    return _context.finish(24);
+                    return _context.finish(26);
 
-                  case 27:
+                  case 29:
                     return _context.abrupt("return", result);
 
-                  case 28:
+                  case 30:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, _callee, this, [[11, 21, 24, 27]]);
+            }, _callee, this, [[13, 23, 26, 29]]);
           }));
         }
       }, {
